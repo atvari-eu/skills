@@ -1,0 +1,51 @@
+{
+  "skill_name": "atvari-copyright",
+  "evals": [
+    {
+      "id": 0,
+      "prompt": "scaffold a new MIT-licensed CLI tool repo for us. git email in this machine is jdoe@atvari.eu. include the readme license section.",
+      "expected_output": "LICENSE file with full MIT text and `Copyright (c) <current year> atvari GmbH`, README `## License` section reading `[MIT](LICENSE) © [atvari GmbH](https://atvari.eu)`. Recognizes the project as atvari's from the @atvari.eu git config email even though copyright wasn't mentioned explicitly.",
+      "files": [],
+      "assertions": [
+        "Recognizes the project as atvari's via the @atvari.eu git config email without being told explicitly",
+        "LICENSE contains `Copyright (c) <current year> atvari GmbH` with no 'All rights reserved' suffix",
+        "README has a license section matching `[MIT](LICENSE) © [atvari GmbH](https://atvari.eu)`",
+        "Uses the current year, single year, not a template's stale year"
+      ]
+    },
+    {
+      "id": 1,
+      "prompt": "was fehlt noch auf unserer deutschen produktseite im footer? (site is german-language, proprietary content, code is MIT)",
+      "expected_output": "German-facing footer notice `© <year> atvari GmbH. Alle Rechte vorbehalten.` for the proprietary site content, while any MIT-licensed code notices stay free of 'Alle Rechte vorbehalten'. May point out a missing Impressum as separate legal requirement.",
+      "files": [],
+      "assertions": [
+        "German footer notice uses '© <year> atvari GmbH. Alle Rechte vorbehalten.' for proprietary content",
+        "Does not add 'Alle Rechte vorbehalten' to MIT-licensed code notices",
+        "Responds in German or at least provides the German notice text correctly",
+        "(If relevant) mentions Impressum as a distinct German legal requirement rather than conflating it with copyright"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "update our zola.toml — it still shows the theme's copyright line 'Tous droits réservés © Portio 2020' and I want proper attribution for our company site.",
+      "expected_output": "Sets `copyright = \"Copyright © <current year> atvari GmbH\"` in the project's own zola.toml; does NOT edit the vendored theme's files to reword its author's copyright lines.",
+      "files": [],
+      "assertions": [
+        "Overrides the copyright in the project's own config with the atvari format, not by editing the vendored theme's files",
+        "Uses `Copyright © <current year> atvari GmbH` format",
+        "Preserves third-party/theme author attribution where it exists instead of deleting it"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "our LICENSE says Copyright (c) 2024 atvari GmbH — it's 2026 now, fix all the years across the repo.",
+      "expected_output": "Pushes back on blanket year-bumping: cosmetic maintenance doesn't create new copyrightable content. Either keeps 2024, or extends to `2024-2026` only if substantial new content was added; does not mass-rewrite every file's notice.",
+      "files": [],
+      "assertions": [
+        "Does not blindly rewrite 2024 → 2026 everywhere",
+        "Explains that trivial edits don't warrant a year bump",
+        "Offers range form (2024-2026) conditional on substantial new content"
+      ]
+    }
+  ]
+}
