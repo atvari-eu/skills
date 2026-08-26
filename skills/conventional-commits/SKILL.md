@@ -1,6 +1,6 @@
 ---
 name: conventional-commits
-description: Write commit messages in Conventional Commits format (`type(scope): description`). Use whenever creating, amending, squashing, or rewriting a commit message — including requests like "commit this", "commit my changes", "save my work", "split this into commits", or "clean up these commit messages" — even when the user doesn't mention any convention. Also use when reviewing or normalizing commit log style. Not for other git mechanics such as branching, rebasing conflicts, remotes, hooks, or signing.
+description: "Write commit messages in Conventional Commits format (`type(scope): description`). Use whenever creating, amending, squashing, or rewriting a commit message — including requests like \"commit this\", \"commit my changes\", \"save my work\", \"split this into commits\", or \"clean up these commit messages\" — even when the user doesn't mention any convention. Also use when reviewing or normalizing commit log style. Not for other git mechanics such as branching, rebasing conflicts, remotes, hooks, or signing."
 ---
 
 # Conventional Commits
