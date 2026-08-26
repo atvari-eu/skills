@@ -1,0 +1,68 @@
+{
+  "skill_name": "ci-agents",
+  "evals": [
+    {
+      "id": 0,
+      "prompt": "We want Claude to review PRs automatically on our GitHub repo. None of us has API budget — but I have a Claude Max subscription. Set up the CI workflow for me.",
+      "expected_output": "A `.github/workflows/claude.yml` using `anthropics/claude-code-action@v1` with `claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}`, plus setup instructions: run `claude setup-token` locally to mint the token (Max works), then either `/install-github-app` or install github.com/apps/claude + `gh secret set CLAUDE_CODE_OAUTH_TOKEN`. No ANTHROPIC_API_KEY anywhere.",
+      "files": [],
+      "assertions": [
+        "Workflow uses anthropics/claude-code-action@v1 with the claude_code_oauth_token input referencing secrets.CLAUDE_CODE_OAUTH_TOKEN",
+        "No ANTHROPIC_API_KEY secret is introduced",
+        "Instructions include generating the token via `claude setup-token`",
+        "Setup guidance covers finishing pipeline variables: /install-github-app flow or manual GitHub App install plus gh secret set CLAUDE_CODE_OAUTH_TOKEN"
+      ]
+    },
+    {
+      "id": 1,
+      "prompt": "add a /oc bot to our repo so we can ask opencode to fix issues from comments. we're on the OpenCode Go plan ($10/mo), so don't bill any Anthropic API.",
+      "expected_output": "A `.github/workflows/opencode.yml` comment-triggered workflow using `anomalyco/opencode/github@latest` with env `OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}` and model id `opencode-go/<model>`. Setup via `opencode github install` (or manual: github.com/apps/opencode-agent + secret). No Anthropic credentials.",
+      "files": [],
+      "assertions": [
+        "Workflow uses anomalyco/opencode/github@latest triggered by issue_comment containing '/oc' or '/opencode'",
+        "Model uses the opencode-go/<model> provider prefix (not anthropic/...)",
+        "OPENCODE_API_KEY is wired from GitHub secrets into the action's env",
+        "Mentions `opencode github install` as the quick-setup path or the equivalent manual app+secret steps",
+        "No Anthropic API keys appear in the solution"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "our code lives on a self-hosted GitLab instance. add a nightly pipeline job that runs opencode over the repo to flag TODO debt, then posts a summary. we use the OpenCode Zen gateway.",
+      "expected_output": "A `.gitlab-ci.yml` with a scheduled-friendly job that installs opencode (npm or install script) and runs `opencode run \"…\" --model opencode/<model>` with `OPENCODE_API_KEY` supplied as a masked GitLab CI variable (Settings → CI/CD → Variables). May alternatively reference the nagyv/gitlab-opencode component with a File-type auth JSON variable.",
+      "files": [],
+      "assertions": [
+        "Provides a .gitlab-ci.yml job (not GitHub Actions syntax)",
+        "Model id uses the opencode/<model> Zen prefix",
+        "Credential comes from a GitLab CI/CD variable marked masked (or File-type auth JSON), not hardcoded",
+        "Job runs opencode headlessly via `opencode run` (non-interactive) rather than the TUI",
+        "Includes where to create the variable: Settings → CI/CD → Variables"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "can I point opencode at my Claude Max subscription in CI like claude code does with that oauth token env var? I'd rather not pay per token.",
+      "expected_output": "Honest answer: no supported path — OpenCode removed built-in Claude Pro/Max OAuth after Anthropic's legal request and subscription tokens are restricted to official clients by ToS; community workarounds (auth.json injection, plugins) are fragile gray-area territory. Steers to the supported split: Claude Code (`CLAUDE_CODE_OAUTH_TOKEN`) handles Claude-model jobs, OpenCode runs on its own cheap Go/Zen `OPENCODE_API_KEY`. Does not present an auth.json/oauth-in-opencode recipe as the recommended solution.",
+      "files": [],
+      "assertions": [
+        "States clearly that Claude-subscription auth in OpenCode is unsupported/removed (legal request) rather than presenting it as viable",
+        "Recommends routing Claude-model work through Claude Code's CLAUDE_CODE_OAUTH_TOKEN path",
+        "Suggests OpenCode Go/Zen OPENCODE_API_KEY as the low-cost way to run open models",
+        "If workarounds are mentioned at all, they carry an explicit fragility/ToS warning and are not the primary recommendation"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "we self-host Forgejo and want a weekly agent pass over our codebase with opencode go models — create branches with cleanup commits. what do I need to configure?",
+      "expected_output": "Generic-runner recipe (no first-party integration on Forgejo): schedule via Forgejo's cron/scheduled Actions event, job installs opencode (`curl -fsSL https://opencode.ai/install | bash` or npm), runs `opencode run … --model opencode-go/<model>`; credential stored under repo Settings → Actions → Secrets as OPENCODE_API_KEY; notes that branch pushes need a token with write access and won't trigger downstream workflows when pushed with the default token.",
+      "files": [],
+      "assertions": [
+        "Does NOT use anomalyco/opencode/github or other GitHub-app-specific actions",
+        "Uses opencode-go/<model> model id with OPENCODE_API_KEY from the Forgejo/Gitea Actions secret store",
+        "Points to repo Settings → Actions → Secrets for configuring the credential",
+        "Warns that commits pushed with the default GITHUB_TOKEN-like token don't retrigger workflows (or provides an alternative token mechanism)",
+        "Runs opencode non-interactively via `opencode run`"
+      ]
+    }
+  ]
+}
