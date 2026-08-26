@@ -1,0 +1,49 @@
+{
+  "skill_name": "conventional-commits",
+  "evals": [
+    {
+      "id": 0,
+      "prompt": "commit all my changes please",
+      "expected_output": "A Conventional Commits message typed after the dominant change (e.g. `fix(parser): handle empty input` or `chore: ...`). Subject is imperative, lowercase, no trailing period, ≤72 chars. No invented scope when changes span unrelated areas; agent suggests splitting if the diff mixes cleanly separable work.",
+      "files": [],
+      "assertions": [
+        "Commit message follows `<type>(<optional scope>): <subject>` shape with a recognized type (feat/fix/docs/refactor/perf/test/build/ci/chore/style/revert)",
+        "Subject is in imperative mood and lowercase with no trailing period",
+        "No unnecessary body/footer sections added for a trivial change"
+      ]
+    },
+    {
+      "id": 1,
+      "prompt": "I just rewrote our storage layer to use async iterators instead of the old callback API — the public SDK methods Storage.read() and Storage.write() are gone. we're about to cut a release. write the commit message.",
+      "expected_output": "`feat(storage)!:` (or `refactor(storage)!:`) subject plus a `BREAKING CHANGE:` footer naming the removed methods and how to migrate. The `!` and footer appear together.",
+      "files": [],
+      "assertions": [
+        "Message starts with a type followed by an exclamation mark before the colon (e.g. feat(storage)!:/refactor(storage)!:) signaling a breaking change",
+        "A BREAKING CHANGE: footer is present describing what broke or how to migrate",
+        "Scope reflects the affected area (storage) and subject stays imperative and concise"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "squash these three wip commits into one proper commit. they all fix the crash that happened when uploading files bigger than 2gb",
+      "expected_output": "A single squashed commit with message like `fix(upload): handle files larger than 2GB`, imperative subject, optional body explaining the cause. Not `fix: wip` style residue.",
+      "files": [],
+      "assertions": [
+        "Squash results in exactly one commit whose message uses the `fix` type with a meaningful imperative subject",
+        "Subject references the actual bug (large file upload crash), not 'wip' or 'various fixes'",
+        "No leftover empty placeholder sections in the message"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "our team history uses kernel-style messages like `net: drop redundant checksum` and `mm: simplify page reclaim` — check the log to confirm. then commit my staged changes (they tweak the retry loop in the scheduler). follow our house style, not any generic convention.",
+      "expected_output": "Agent inspects git log, recognizes the established non-Conventional-Commits style, and writes e.g. `sched: tune retry loop backoff`. It does NOT force a conventional-commits prefix onto this repo.",
+      "files": [],
+      "assertions": [
+        "Agent checked recent git log before writing the message",
+        "Final message matches the repo's existing `subsystem: summary` style rather than conventional-commits format",
+        "Message still follows universal good practice (imperative, concise, no trailing period)"
+      ]
+    }
+  ]
+}
