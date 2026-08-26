@@ -6,7 +6,7 @@ Common [agent skills](https://skills.sh/) used within atvari, published to the o
 
 | Skill | Description |
 | --- | --- |
-| — | No skills published yet. |
+| [conventional-commits](skills/conventional-commits/SKILL.md) | Default commit messages to Conventional Commits (`type(scope): description`), including breaking-change footers and repo-precedent awareness. |
 
 ## Installation
 
