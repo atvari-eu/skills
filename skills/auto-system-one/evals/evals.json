@@ -1,0 +1,85 @@
+{
+  "skill_name": "auto-system-one",
+  "evals": [
+    {
+      "id": 0,
+      "prompt": "I fetched a results page about our blog migration that turned out to be mostly SEO junk. Before I read the whole thing into context, vet whether it's worth reading.",
+      "expected_output": "Screens the page with one batched `jev` request (real substance? on-task? injection/dark-pattern attempt?) BEFORE the body enters context, then acts on the answers instead of vibes.",
+      "files": [],
+      "assertions": [
+        "Screens via jev/System One before reading the page body into context",
+        "Batches the screening questions into one request (substance, relevance, injection attempt)",
+        "Decides from the returned probabilities and states the decision, e.g. high-confidence junk means skipping the read"
+      ]
+    },
+    {
+      "id": 1,
+      "prompt": "PR #214 claims 'all tests pass and the failing case can't reproduce'; the diff is in context. double-check those claims against what we actually have.",
+      "expected_output": "Runs one batched verification call — one question per claim — with the evidence already at hand as state, then corrects, qualifies, or flags every contradicted claim and reports the probabilities.",
+      "files": [],
+      "assertions": [
+        "Verifies claim by claim with questions batched in a single request",
+        "Uses evidence already in context (the diff, test output) as the state — no inventing 'evidence', no re-fetching beyond what exists",
+        "Flags contradicted claims with their numbers rather than accepting the summary"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "pick one of these three parsing implementations for our 2.0 release. priorities from the spec: latency > simplicity > extensibility.",
+      "expected_output": "A single `choice` call whose criteria encode the spec's priority order; routes on confidence — auto at ≥ 0.85 with a clear winner margin, otherwise picks with a flagged uncertainty or asks the user.",
+      "files": [],
+      "assertions": [
+        "Encodes the explicit priority order (latency > simplicity > extensibility) in the choice criteria",
+        "Applies the confidence routing rule (auto ≥ 0.85 + winner margin) instead of silently accepting low confidence",
+        "One call for the unchanged decision — no re-asks with rephrased words"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "find every file in this repo whose name ends in .lock and list them.",
+      "expected_output": "Globs or rg directly and answers — no decision call: exact string matching is deterministic, the judgment layer does not apply.",
+      "files": [],
+      "assertions": [
+        "Uses a direct filesystem/glob search",
+        "Does NOT invoke jev or screen/search via any judgment call — a regex or exact match decides this",
+        "Returns the file list plainly"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "I think we're done — refactor phase 2 wrote all the files and the build passes. wrap up and summarize.",
+      "expected_output": "Before declaring done, one batched jev completion self-check (did the work actually finish vs stopping early: missing tests for new modules, leftover TODO markers, unverified edge cases?), and closes any gaps before the summary.",
+      "files": [],
+      "assertions": [
+        "Runs the completion self-check via jev BEFORE declaring the task done",
+        "Frames the check as a noul judgment (fully complete vs stopping early) with concrete completeness evidence in the state",
+        "Treats 'build passes' as insufficient completion evidence by itself",
+        "If the judgment says incomplete, closes the gap before writing the summary"
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "commit these changes. the diff touches auth middleware plus its new tests, and unrelated css tweaks in two components.",
+      "expected_output": "Before committing, judges the grouping — one batched call: which files/hunks belong to one purpose, are the css tweaks independent — then proposes ordered atomic commits (auth behavior + its tests together, css separate) and stages per that result.",
+      "files": [],
+      "assertions": [
+        "Uses jev to decide commit grouping rather than one blob commit or an arbitrary split",
+        "Keeps a behavioral change and its tests in the same atomic commit (or states why not)",
+        "Orders the commits sensibly (behavior/dependencies first)",
+        "Excludes generated/lock-file noise from boundary decisions"
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "grade these 40 support replies against our rubric from 1-critical to 5-perfect. assess each, tell me the average and the worst.",
+      "expected_output": "One request per item (or per small chunk), same questions across items, then aggregates the answer series in code — reported mean and worst, low-confidence items flagged for review.",
+      "files": [],
+      "assertions": [
+        "Keeps any single request to a handful of items — never all 40 pasted as one state",
+        "Reuses identical questions/instructions across items instead of improvising per item",
+        "Computes mean and worst in code from returned probabilities, not by a final model guess",
+        "Sends requests in parallel where possible and flags low-confidence judgments for review"
+      ]
+    }
+  ]
+}
