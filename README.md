@@ -12,6 +12,12 @@ Common [agent skills](https://skills.sh/) used within atvari, published to the o
 | [conventional-commits](skills/conventional-commits/SKILL.md) | Default commit messages to Conventional Commits (`type(scope): description`), including breaking-change footers and repo-precedent awareness. |
 | [system-one](skills/system-one/SKILL.md) | How to call a Jev decision endpoint from the terminal — default OpenCode Console System One, others via env overrides — with request shapes for noul / choice / score, the `jev` CLI, thresholds, and privacy guardrails. |
 
+On OpenCode, use the
+[opencode-system-one](https://github.com/atvari-eu/opencode-system-one) plugin
+instead of `auto-system-one` and `system-one`: it enforces the same judgment
+layer natively (`jev_decide` / `jev_judge_many` tools, screening, scrubbing,
+routing). The two skills remain for agents without that plugin.
+
 ## Installation
 
 Install individual skills via the `skills` CLI:
