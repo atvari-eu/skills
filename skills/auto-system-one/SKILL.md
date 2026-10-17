@@ -17,6 +17,14 @@ standard key names for other Jev-compatible endpoints and agents,
 request/response shapes, models, the `jev` CLI — lives in the `system-one`
 skill. Read it when writing the call; this skill only decides *when*.
 
+On OpenCode, the
+[opencode-system-one](https://github.com/atvari-eu/opencode-system-one) plugin
+is an alternative to loading this skill and `system-one` at all: it registers
+`jev_decide` / `jev_judge_many` as first-class tools whose descriptions carry
+the same judgment-moment guidance and call discipline, screens fetched content
+before it enters context, and scrubs secrets from jev state. On OpenCode,
+prefer the plugin; this skill is for agents without it.
+
 ## Use it when
 
 | Situation | Check |
