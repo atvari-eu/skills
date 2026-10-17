@@ -16,6 +16,14 @@ Jev-compatible endpoint and from any agent. When to reach for a judgment call
 versus your own reading is the `auto-system-one` skill's job (when installed);
 this document carries the mechanics.
 
+On OpenCode, the
+[opencode-system-one](https://github.com/atvari-eu/opencode-system-one) plugin
+makes this skill redundant: it exposes the same contract as native
+`jev_decide` / `jev_judge_many` tools with caching and built-in call
+discipline, so there is no request to write by hand — use the plugin instead
+of installing this skill. Everything below still applies verbatim for other
+agents, non-Console endpoints, and for writing integrations.
+
 ## Endpoint, auth, model — defaults and overrides
 
 | Variable | Purpose | Default |
